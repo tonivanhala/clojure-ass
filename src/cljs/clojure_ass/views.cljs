@@ -6,10 +6,24 @@
                                        .-target
                                        .-value)]))
 
+(defn history-item [item]
+  [:li {:key item} item])
+
+(defn search-history []
+  (let [history (re-frame/subscribe [:history])]
+    (fn []
+      [:ul.list-inline (map history-item @history)])))
+
+(defn handle-form-submit [evt]
+  (.preventDefault evt)
+  (re-frame/dispatch [:new-search]))
+
 (defn main-panel []
   (let [name (re-frame/subscribe [:name])]
     (fn []
       [:div.container-fluid
-        [:input.form-control {:type "text"
-                              :value @name
-                              :on-change handle-name-change}]])))
+        [:form {:role "form" :on-submit handle-form-submit}
+          [:input.form-control {:type "text"
+                                :value @name
+                                :on-change handle-name-change}]]
+        [search-history]])))

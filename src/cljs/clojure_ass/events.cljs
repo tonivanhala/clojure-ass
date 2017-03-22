@@ -11,3 +11,9 @@
   :name-change
   (fn [db [evt-type new-name]]
     (assoc db :name new-name)))
+
+(re-frame/reg-event-db
+  :new-search
+  (fn [db _]
+    (let [search-term (:name db)]
+      (update db :history #(conj % search-term)))))
