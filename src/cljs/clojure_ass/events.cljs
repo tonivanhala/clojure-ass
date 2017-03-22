@@ -6,3 +6,8 @@
  :initialize-db
  (fn  [_ _]
    db/default-db))
+
+(re-frame/reg-event-db
+  :name-change
+  (fn [db [evt-type new-name]]
+    (assoc db :name new-name)))
