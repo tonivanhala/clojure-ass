@@ -4,4 +4,5 @@
 (defn main-panel []
   (let [name (re-frame/subscribe [:name])]
     (fn []
-      [:div "Hello from " @name])))
+      [:div.container-fluid
+        [:input.form-control {:type "text"}]])))
