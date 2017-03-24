@@ -7,7 +7,8 @@
                  [cljs-ajax "0.5.8"]
                  [com.cemerick/url "0.1.1"]
                  [ring/ring-core "1.6.0-RC1"]
-                 [ring/ring-defaults "0.2.3"]]
+                 [ring/ring-defaults "0.2.3"]
+                 [bidi "2.0.16"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]]
 

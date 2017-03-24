@@ -4,7 +4,9 @@
               [day8.re-frame.http-fx]
               [ajax.core :as ajax]
               [cemerick.url :refer [url-encode]]
-              [clojure-ass.api-key :refer [API-KEY]]))
+              [clojure-ass.api-key :refer [API-KEY]]
+              [bidi.bidi :refer [path-for]]
+              [clojure-ass.routes :refer [routes]]))
 
 (def BASE-URI (str "http://ws.audioscrobbler.com/2.0/?format=json&api_key=" API-KEY))
 
@@ -65,4 +67,16 @@
 (re-frame/reg-event-fx
   :navigate
   (fn [{:keys [db]} [evt-type route-name params]]
-    {:db (assoc db :route {:handler route-name :route-params params})}))
+    (let [path (->> params
+                    seq
+                    flatten
+                    (apply (partial path-for routes route-name)))]
+    {:db (assoc db :route {:handler route-name :route-params params})
+     :browser-history-push path})))
+
+(re-frame/reg-fx
+  :browser-history-push
+  (fn [path]
+    (-> js/window
+        .-history
+        (.pushState {} "" path))))
