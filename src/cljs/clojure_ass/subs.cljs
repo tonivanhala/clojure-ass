@@ -25,3 +25,13 @@
   :search-results
   (fn [db]
     (map get-track-with-image (:search-results db))))
+
+(re-frame/reg-sub
+  :related-tracks
+  (fn [db]
+    (map get-track-with-image (:related-tracks db))))
+
+(re-frame/reg-sub
+  :route
+  (fn [db]
+    (:route db)))

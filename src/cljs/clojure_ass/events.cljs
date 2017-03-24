@@ -39,7 +39,8 @@
       {:db (update db :history #(conj % search-term))
        :http-xhrio (mk-get-request (mk-search-uri search-term)
                                    :search-success
-                                   :search-fail)})))
+                                   :search-fail)
+       :dispatch [:navigate :base {}]})))
 
 (re-frame/reg-event-db
   :search-success
@@ -53,9 +54,15 @@
   (fn [{:keys [db]} [evt-type mbid]]
     {:http-xhrio (mk-get-request (mk-related-uri mbid)
                                  :related-success
-                                 :related-fail)}))
+                                 :related-fail)
+     :dispatch [:navigate :related {:mbid mbid}]}))
 
 (re-frame/reg-event-db
   :related-success
   (fn [db [_ result]]
     (assoc db :related-tracks (get-in result [:similartracks :track] []))))
+
+(re-frame/reg-event-fx
+  :navigate
+  (fn [{:keys [db]} [evt-type route-name params]]
+    {:db (assoc db :route {:handler route-name :route-params params})}))
