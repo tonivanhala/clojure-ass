@@ -5,7 +5,9 @@
                  [re-frame "0.9.2"]
                  [day8.re-frame/http-fx "0.1.3"]
                  [cljs-ajax "0.5.8"]
-                 [com.cemerick/url "0.1.1"]]
+                 [com.cemerick/url "0.1.1"]
+                 [ring/ring-core "1.6.0-RC1"]
+                 [ring/ring-defaults "0.2.3"]]
 
   :plugins [[lein-cljsbuild "1.1.4"]]
 
@@ -15,7 +17,8 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :figwheel {:css-dirs ["resources/public/css"]}
+  :figwheel {:css-dirs ["resources/public/css"]
+             :ring-handler clojure-ass.core/http-handler}
 
   :profiles
   {:dev
@@ -32,7 +35,7 @@
      :compiler     {:main                 clojure-ass.core
                     :output-to            "resources/public/js/compiled/app.js"
                     :output-dir           "resources/public/js/compiled/out"
-                    :asset-path           "js/compiled/out"
+                    :asset-path           "/js/compiled/out"
                     :source-map-timestamp true
                     :preloads             [devtools.preload]
                     :external-config      {:devtools/config {:features-to-install :all}}
