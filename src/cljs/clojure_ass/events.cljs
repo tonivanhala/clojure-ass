@@ -5,7 +5,7 @@
               [ajax.core :as ajax]
               [cemerick.url :refer [url-encode]]
               [clojure-ass.api-key :refer [API-KEY]]
-              [bidi.bidi :refer [path-for]]
+              [bidi.bidi :refer [path-for match-route]]
               [clojure-ass.routes :refer [routes]]))
 
 (def BASE-URI (str "http://ws.audioscrobbler.com/2.0/?format=json&api_key=" API-KEY))
@@ -24,10 +24,18 @@
    :on-success        [success-evt]
    :on-failure        [fail-evt]})
 
-(re-frame/reg-event-db
- :initialize-db
- (fn  [_ _]
-   db/default-db))
+(defn- initial-dispatch [route]
+  (case (:handler route)
+    :related {:dispatch [:related-search (get-in route [:route-params :mbid])]}
+    {}))
+
+(re-frame/reg-event-fx
+  :initialize-db
+  [(re-frame/inject-cofx :get-browser-path)]
+  (fn [{:keys [db browser-path]} _]
+    (let [route (match-route routes browser-path)]
+      (merge {:db (merge db/default-db {:route route})}
+             (initial-dispatch route)))))
 
 (re-frame/reg-event-db
   :name-change
@@ -80,3 +88,11 @@
     (-> js/window
         .-history
         (.pushState {} "" path))))
+
+(re-frame/reg-cofx
+  :get-browser-path
+  (fn [cofx _]
+    (assoc cofx :browser-path
+      (-> js/window
+          .-location
+          .-pathname))))
