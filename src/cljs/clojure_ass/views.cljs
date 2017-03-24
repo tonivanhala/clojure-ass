@@ -14,6 +14,16 @@
     (fn []
       [:ul.list-inline (map history-item @history)])))
 
+(defn result-item [item]
+  [:div.panel.col-md-4 {:key (:mbid item)}
+    [:div.panel-heading (:name item)]
+    [:div.panel-body [:img.img-responsive {:src (:img item)}]]
+    [:div.panel-footer [:strong (:artist item)]]])
+
+(defn search-results []
+  (let [results (re-frame/subscribe [:search-results])]
+    [:div (map result-item @results)]))
+
 (defn handle-form-submit [evt]
   (.preventDefault evt)
   (re-frame/dispatch [:new-search]))
@@ -26,4 +36,5 @@
           [:input.form-control {:type "text"
                                 :value @name
                                 :on-change handle-name-change}]]
-        [search-history]])))
+        [search-history]
+        [search-results]])))

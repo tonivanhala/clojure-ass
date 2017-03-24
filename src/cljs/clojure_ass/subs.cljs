@@ -11,3 +11,17 @@
   :history
   (fn [db]
     (:history db)))
+
+(defn- get-track-with-image [track]
+  (let [img-uri (->> track
+                     :image
+                     (filter #(= (:size %) "large"))
+                     first
+                     :#text)
+        t       (select-keys track [:mbid :name :artist])]
+    (assoc t :img img-uri)))
+
+(re-frame/reg-sub
+  :search-results
+  (fn [db]
+    (map get-track-with-image (:search-results db))))
