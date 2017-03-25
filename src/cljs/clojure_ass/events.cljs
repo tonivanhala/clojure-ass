@@ -11,6 +11,9 @@
 (defn mk-search-uri [term]
   (str BASE-URI "&method=track.search&track=" (url-encode term)))
 
+(defn- mk-related-uri [mbid]
+  (str BASE-URI "&method=track.getsimilar&mbid=" mbid))
+
 (defn mk-get-request [uri success-evt fail-evt]
   {:method            :get
    :uri               uri
@@ -44,3 +47,15 @@
     (assoc db :search-results (get-in result [:results
                                               :trackmatches
                                               :track] []))))
+
+(re-frame/reg-event-fx
+  :related-search
+  (fn [{:keys [db]} [evt-type mbid]]
+    {:http-xhrio (mk-get-request (mk-related-uri mbid)
+                                 :related-success
+                                 :related-fail)}))
+
+(re-frame/reg-event-db
+  :related-success
+  (fn [db [_ result]]
+    (assoc db :related-tracks (get-in result [:similartracks :track] []))))
