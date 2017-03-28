@@ -2,4 +2,6 @@
 
 (def default-db
   {:name    ""
-   :history '()})
+   :history '()
+   :search-results []
+   :related-tracks []})

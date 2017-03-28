@@ -6,7 +6,8 @@
               [cemerick.url :refer [url-encode]]
               [clojure-ass.api-key :refer [API-KEY]]
               [bidi.bidi :refer [path-for match-route]]
-              [clojure-ass.routes :refer [routes]]))
+              [clojure-ass.routes :refer [routes]]
+              [clojure-ass.spec :refer [check-spec-interceptor]]))
 
 (def BASE-URI (str "http://ws.audioscrobbler.com/2.0/?format=json&api_key=" API-KEY))
 
@@ -31,7 +32,8 @@
 
 (re-frame/reg-event-fx
   :initialize-db
-  [(re-frame/inject-cofx :get-browser-path)]
+  [(re-frame/inject-cofx :get-browser-path)
+   check-spec-interceptor]
   (fn [{:keys [db browser-path]} _]
     (let [route (match-route routes browser-path)]
       (merge {:db (merge db/default-db {:route route})}
@@ -39,6 +41,7 @@
 
 (re-frame/reg-event-db
   :name-change
+  [check-spec-interceptor]
   (fn [db [evt-type new-name]]
     (assoc db :name new-name)))
 
