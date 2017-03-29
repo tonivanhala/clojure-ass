@@ -1,6 +1,8 @@
 # clojure-ass
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+Dr. Vanhala's live coding on March 29th, 2017. 
+
+A [re-frame](https://github.com/Day8/re-frame) application that fetches tracks from AudioScrobbler API.
 
 ## Development Mode
 
